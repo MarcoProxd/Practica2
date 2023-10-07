@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("POSTGRES_URL")
+}
+
+model Local {
+  id_local    Int     @id @default(autoincrement())
+  id_ciudad   Int
+  nombre String
+  direccion String?
+  capacidad Int
+  descripcion String?
+  contrato Contratos[]
+  serviciosad ServiciosAdicionales[]
+}
+model Contratos {
+  id_contrato     Int       @id @default(autoincrement())
+  id_pago         Int
+  id_usuario      Int
+  fecha_inicio    DateTime
+  fecha_fin       DateTime
+  terminos        String?
+  numero_invitados Int
+  estado          String
+  local     Local   @relation(fields: [id_localfk], references:[id_local])
+  id_localfk    Int
+  serviciosad     ServiciosAdicionales[]
+}
+model ServiciosAdicionales {
+  id_serviad        Int     @id @default(autoincrement())
+  nombre     String
+  descripcion   String?
+  precio_adicional Decimal
+  local     Local   @relation(fields: [id_localfk], references:[id_local])
+  id_localfk    Int
+  contrato         Contratos  @relation(fields: [id_contratofk], references: [id_contrato])
+  id_contratofk    Int
+}
